@@ -1,9 +1,8 @@
-Knife oraclepaas
+Knife Plugin for the Oracle Cloud Platform
 ===============
 
-TODO
+This plugin allows you to interact with the Oracle Cloud Platform from knife.
 
-Please refer to the [CHANGELOG](CHANGELOG.md) for version history and known issues.
 
 # Installation #
 
@@ -15,4 +14,5 @@ TODO
 
 # License #
 
-TODO
+Author: Joel Nation
+Copyright: Copyright (c) 2016 Oracle Corporation
