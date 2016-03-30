@@ -40,6 +40,11 @@ Returns the details for an instance. There are no options to this command.
 `knife oraclepaas [java|database|soa|storage] create (options)`
 Create a new instance. There are various options depending on the service you call. This command will wait until the instance is actually provisioned (or timeout after 2 hours). Pass a 'run_list' if you want this plugin to bootstrap the server, register with your chef server and run your recipes.
 
+Example:
+```bash
+knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_container WeblogicBackup --shape oc3 --weblogic_edition SE --db_service_name MyDatabaseInstance --dba_name SYS --dba_password MyDB#1
+```
+
 ## Stack
 `knife oraclepaas [java|database|soa|storage] stack build stack.yaml (options)
 Provide a *yaml* file that details a number of java, database, soa and storage instances that you want created. This will create those instances in order, with pauses whilst each instance is provisioned. This will take some time!
