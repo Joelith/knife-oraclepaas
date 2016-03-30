@@ -11,6 +11,7 @@ If you're using [ChefDK](https://downloads.chef.io/chef-dk/), simply install the
 ```bash
 $ chef gem install knife-oraclepaas
 ```
+You will need to install my forked version of [fog](https://github.com/Joelith/fog) until the Oracle extensions are added to the main repository. 
 
 # Configuration #
 
