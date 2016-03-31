@@ -6,15 +6,17 @@ This plugin allows you to interact with the Oracle Cloud Platform from knife.
 
 # Installation #
 
-If you're using [ChefDK](https://downloads.chef.io/chef-dk/), simply install the Gem:
+First, you'll need to install my forked version of [fog](https://github.com/Joelith/fog) until the Oracle extensions are added to the main repository. To do so:
+
+1. Dowload the oracle modified version of [fog](https://github.com/Joelith/fog) to some directory
+2. Navigate to that directory and run `chef gem build fog.gemspec`
+3. Then run `chef gem install fog` to install into your chefdk library
+
+Then download this repository, navigate to the directory and run
 
 ```bash
 $ chef gem install knife-oraclepaas
 ```
-You will need to install my forked version of [fog](https://github.com/Joelith/fog) until the Oracle extensions are added to the main repository. 
-+ Dowload the oracle modified version of [fog](https://github.com/Joelith/fog) to some directory
-+ Navigate to that directory and run `chef gem build fog.gemspec`
-+ Then run `chef gem install fog` to install into your chefdk library
 
 # Configuration #
 
