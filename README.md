@@ -12,11 +12,11 @@ First, you'll need to install my forked version of [fog](https://github.com/Joel
 2. Navigate to that directory and run `chef gem build fog.gemspec`
 3. Then run `chef gem install fog` to install into your chefdk library
 
-Then download this repository, navigate to the directory and run
+Then you will need to install this plugin
 
-```bash
-$ chef gem install knife-oraclepaas
-```
+1. Download the repository and navigate to it
+2. Run `chef gem build knife-oraclepaas.gemspec`
+3. Run `chef gem install knife-oraclepaas` to install into your chefdk library
 
 # Configuration #
 
