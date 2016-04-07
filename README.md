@@ -20,38 +20,153 @@ Then you will need to install this plugin
 
 # Configuration #
 
-In order to communicate with the Oracle Cloud Platform you will need to pass Knife your username, password and identity domain. This can be done in several ways:
-
-The easiest way to configure your credentials for knife-oraclepaas is to specify them in your your `knife.rb` file:
+In order to communicate with the Oracle Cloud Platform you will need to pass Knife your username, password and identity domain. You will also need to provide the vm_public_key so that bootstrap mechanism can ssh into the box and the compute_api endpoint so that the script can interact with the compute cloud service.The easiest way to configure your credentials for knife-oraclepaas is to specify them in your your `knife.rb` file:
 
 ```ruby
-knife[:oraclepaas_username] = "Your Oracle Cloud username"
-knife[:oraclepaas_password] = "Your Oracle Cloud password"
-knife[:oraclepaas_domain] = "Your Oracle Cloud identity domain"
-knife[:oraclepaas_vm_public_key] = "The public key that you use for your VMs (as text, eg: ssh-rsa <long string>)"
+knife[:oraclepaas_username] = 'Your Oracle Cloud username'
+knife[:oraclepaas_password] = 'Your Oracle Cloud password'
+knife[:oraclepaas_domain] = 'Your Oracle Cloud identity domain'
+knife[:oraclepaas_vm_public_key] = 'The public key that you use for your VMs (as text, eg: ssh-rsa <long string>)'
+knife[:oraclepaas_compute_api] = 'Something like http://api-z17.compute.us6.oraclecloud.com'
 ```
 
+For bootstrapping to work you will also need to provide the identity_file and ssh_user details:
+
+```ruby
+knife[:identity_file] = 'Path to your identity file'
+knife[:ssh_user] = 'opc' # The ssh user for the cloud is always opc
+
+```
 
 # Services #
 ## List
-`knife oraclepaas [java|database|soa|storage] list`
+`knife oraclepaas [java|database|soa|storage|secapp|secrule|seclist] list`
+
 Returns a list of all instances in that cloud service. There are no options to this command.
 
 ## Show
-`knife oraclepaas [java|database|soa|storage] show`
+`knife oraclepaas [java|database|soa|storage|secrule] show`
+
 Returns the details for an instance. There are no options to this command.
 
 ## Create
-`knife oraclepaas [java|database|soa|storage] create (options)`
-Create a new instance. There are various options depending on the service you call. This command will wait until the instance is actually provisioned (or timeout after 2 hours). Pass a 'run_list' if you want this plugin to bootstrap the server, register with your chef server and run your recipes.
+`knife oraclepaas [java|database|soa|storage|secapp|secrule] create (options)`
+
+Create a new instance. There are various options depending on the service you call. This command will wait until the instance is actually provisioned (or timeout after 2 hours). Pass a 'run-list' if you want this plugin to bootstrap the server, register with your chef server and run your recipes.
 
 Example:
 ```bash
-knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_container WeblogicBackup --shape oc3 --weblogic_edition SE --db_service_name MyDatabaseInstance --dba_name SYS --dba_password MyDB#1
+knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_container WeblogicBackup --shape oc3 --weblogic_edition SE --db_service_name MyDatabaseInstance --dba_name SYS --dba_password MyDB#1 --run-list ofmcanberra_example
 ```
 
+### Create Java options
+<table>
+  <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>description</tt></td>
+    <td>String</td>
+    <td>Free-form text that provides additional information about the service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>level</tt></td>
+    <td>PAAS|BASIC</td>
+    <td>The service level. BASIC will provision virtual images with no cloud tooling</td>
+    <td>PAAS</td>
+  </tr>
+  <tr>
+    <td><tt>provision_otd</tt></td>
+    <td>Boolean</td>
+    <td>Flag that specifies whether to enable the load balancer. Currently not supported</td>
+    <td>false</td>
+  </tr>
+  <tr>
+    <td><tt>sample_app</tt></td>
+    <td>String</td>
+    <td>Flag that specifies whether to automatically deploy and start the sample application. Currently not supported</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>subscription_type</tt></td>
+    <td>HOURLY|MONTHLY</td>
+    <td>Billing unit</td>
+    <td>HOURLY</td>
+  </tr>
+  <tr>
+    <td><tt>cloud_storage_container</tt></td>
+    <td>String</td>
+    <td>Name of the Oracle Storage Cloud Service container used to provide storage for your service instance backups</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>weblogic_version</tt></td>
+    <td>String</td>
+    <td>The Oracle WebLogic Server software version. Currently supports 10.3.6.0.12, 12.1.3.0.5, 12.2.1</td>
+    <td>12.1.3.0.5</td>
+  </tr>
+  <tr>
+    <td><tt>weblogic_edition</tt></td>
+    <td>SE|EE|SUITE</td>
+    <td>Software edition for WebLogic Server</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>server_count</tt></td>
+    <td>1|2|4|8</td>
+    <td>Number of Managed Servers in the domain</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><tt>domain_name</tt></td>
+    <td>String</td>
+    <td>Name of the Weblogic domain</td>
+    <td>First 6 characters of Service name + '_domain'</td>
+  </tr>
+  <tr>
+    <td><tt>shape</tt></td>
+    <td>oc3|oc4|oc5|oc6| oc1m|oc2m|oc3m|oc4m</td>
+    <td>Desired compute shape</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>domain_volume_size</tt></td>
+    <td>Integer</td>
+    <td>Size of the domain volume for the service</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>backup_volume_size</tt></td>
+    <td>Integer</td>
+    <td>Size of the backup volume for the service</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>db_service_name</tt></td>
+    <td>String</td>
+    <td>Name of the Oracle Database Cloud - Database as a Service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>dba_name</tt></td>
+    <td>String</td>
+    <td>Username for the Oracle Database Cloud - Database as a Service instance administrator</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>dba_password</tt></td>
+    <td>String</td>
+    <td>Password for the Oracle Database Cloud - Database as a Service instance administrator</td>
+    <td></td>
+  </tr>
+</table>
 ## Stack
-`knife oraclepaas [java|database|soa|storage] stack build stack.yaml (options)
+`knife oraclepaas stack build stack.yaml (options)`
+
 Provide a *yaml* file that details a number of java, database, soa and storage instances that you want created. This will create those instances in order, with pauses whilst each instance is provisioned. This will take some time!
 
 Eg: this yaml file will create a storage, database and java instance. The parameters in the config align with the parameters for the equivalent *create* command:
@@ -86,7 +201,8 @@ instances:
 
 # Limitations
 
-- Deleting an instance is not currently supported
+- This is provided as is and still needs some work to be fully productionised. 
+- Deleting an instance is only supported for Java instances
 - This does not support the emea cloud service (which has a different cloud prefix)
 
 # License #
