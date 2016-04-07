@@ -9,6 +9,7 @@ require 'chef/knife/cloud/oraclepaas_server_create_options'
 require 'chef/knife/cloud/oraclepaas_java_service'
 require 'chef/knife/cloud/oraclepaas_service_options'
 require 'chef/knife/cloud/exceptions'
+require 'resolv'
 
 class Chef
   class Knife
@@ -80,9 +81,10 @@ class Chef
 
         def before_exec_command
           super
+          identity_domain = Chef::Config[:knife][:oraclepaas_domain]
           server_def ={
             service_name: locate_config_value(:service_name),
-            cloudStorageContainer: locate_config_value(:cloud_storage_container),
+            cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
             cloudStorageUser: locate_config_value(:oraclepaas_username),
             cloudStoragePassword: locate_config_value(:oraclepaas_password),
             description: locate_config_value(:description),
@@ -95,14 +97,14 @@ class Chef
             #TODO
           end
           # Add Weblogic parameters
-          server_def[:parameters] << {
+          weblogic_params = {
             type: 'weblogic',
             version: locate_config_value(:weblogic_version) || '12.1.3.0.5',
             edition: locate_config_value(:weblogic_edition),
             managedServerCount: locate_config_value(:server_count) || '1',
             domainName: locate_config_value(:domain_name),
             adminUserName: locate_config_value(:weblogic_admin_name) || 'weblogic',
-            adminPassword: locate_config_value(:weblogic_admin_password) || 'welcome1',
+            adminPassword: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)}\#1",
             shape: locate_config_value(:shape),
             domainVolumeSize: locate_config_value(:domain_volume_size),
             backupVolumeSize: locate_config_value(:backup_volume_size),
@@ -111,7 +113,8 @@ class Chef
             dbaName: locate_config_value(:dba_name),
             dbaPassword: locate_config_value(:dba_password)
           }
-          
+          weblogic_params.delete_if { |k, v| v.nil? }
+          server_def[:parameters] << weblogic_params
           @create_options = {
             server_create_timeout: 7200,
             server_def: server_def
@@ -120,23 +123,82 @@ class Chef
 
         # Setup the floating ip after server creation.
         def after_exec_command
-          # Any action you want to perform post VM creation in your cloud.
-          # Example say assigning floating IP to the newly created VM.
-          # Make calls to "service" object if you need any information for cloud, example service.connection.addresses
-          # Make call to "server" object if you want set properties on newly created VM, example server.associate_address(floating_address)
-          super
-        end
-
-        def before_bootstrap
-          super
-          bootstrap_ip_address = server.ip_address
-          Chef::Log.debug("Bootstrap IP Address: #{bootstrap_ip_address}")
-          if bootstrap_ip_address.nil?
-            error_message = "No IP address available for bootstrapping."
-            ui.error(error_message)
-            raise CloudExceptions::BootstrapError, error_message
+          # Open default networking ports
+          compute_service = ComputeService.new
+          container = "/Compute-#{locate_config_value(:oraclepaas_domain)}/#{locate_config_value(:oraclepaas_username)}"
+          service_name = locate_config_value(:service_name)
+          # First create a security application for the managed ports
+          secapps = [{"port" => 8001, "name" => "HTTP"},{"port" => 8002,"name" => "HTTPS"}]
+          secapps.each do |app|
+            begin
+              compute_service.create_security_application({
+                name: "#{container}/#{service_name}-MS-#{app['name']}",
+                protocol: 'tcp',
+                dport: app['port'],
+                description: "#{app['name']} port for managed servers"
+              })
+            rescue CloudExceptions::ServerCreateError => e
+              # Most likely the secapp already exists. Warn and move on
+              puts "#{e}\n"
+            end
           end
-          config[:bootstrap_ip_address] = bootstrap_ip_address
+          # Then create a security rule with this security application for the managed servers
+          secrules = ["HTTP","HTTPS"]
+          secrules.each do |name|
+            begin
+              compute_service.create_security_rule({
+                name: "#{container}/#{service_name}-Public-MS-#{name}",
+                src_list: 'seciplist:/oracle/public/public-internet',
+                dst_list: "seclist:#{container}/jaas/#{locate_config_value(:service_name)}/wls/ora_ms",
+                application: "#{container}/#{service_name}-MS-#{name}",
+                action: 'PERMIT',
+                description: "Enable access to #{name}"
+              })
+             rescue CloudExceptions::ServerCreateError => e
+              # Most likely the secrule already exists. Warn and move on
+              puts "#{e}\n"
+            end
+          end 
+
+          # Bootstrap each of the managed servers in this instance
+          server.servers.each do |server|
+            Chef::Log.info("Bootstrapping Managed Server #{server.name} (#{server.ip_addr})")
+            if server.ip_addr.blank?
+              error_message = "No IP address for #{server.name}"
+              ui.error(error_message)
+              next
+            end
+            if server.ip_addr !~ Resolv::IPv4::Regex
+              error_message = "Invalid IP address returned for #{server.name}. This is probably due to non-admin servers in the Java Cloud Service not getting public ips. Until this script can get a valid IP address and configure the network you will not be able to bootstrap this machine."
+              ui.error(error_message)
+              next
+            end
+            config[:bootstrap_ip_address] = server.ip_addr
+            config[:chef_node_name] = 'JCS_' + locate_config_value(:service_name) + '_' + server.name
+            config[:first_boot_attributes] = {
+              "oracle" => {
+                service_name: locate_config_value(:service_name),
+                db_service_name: locate_config_value(:db_service_name),
+                dba_name: locate_config_value(:dba_name),
+                dba_password: locate_config_value(:dba_password),
+                identity_domain: locate_config_value(:oraclepaas_domain),
+                weblogic_password: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)}\#1"
+              }
+            }
+            begin
+              # bootstrap the server
+              bootstrap
+            rescue CloudExceptions::BootstrapError => e
+              ui.fatal(e.message)
+              cleanup_on_failure
+              raise e
+            rescue => e
+              error_message = "Check if --bootstrap-protocol and --image-os-type is correct. #{e.message}"
+              ui.fatal(error_message)
+              cleanup_on_failure
+              raise e, error_message
+            end
+          end
         end
 
         def validate_params!
@@ -147,8 +209,6 @@ class Chef
             ui.error(error_message)
             raise CloudExceptions::ValidationError, error_message
           end
-          config[:chef_node_name] = 'JCS_' + locate_config_value(:service_name)
-          config[:run_list] = 'oracle_paas::clean'
         end
 
         def post_connection_validations

@@ -106,23 +106,7 @@ class Chef
 
         # Setup the floating ip after server creation.
         def after_exec_command
-          # Any action you want to perform post VM creation in your cloud.
-          # Example say assigning floating IP to the newly created VM.
-          # Make calls to "service" object if you need any information for cloud, example service.connection.addresses
-          # Make call to "server" object if you want set properties on newly created VM, example server.associate_address(floating_address)
-
-        end
-
-        def before_bootstrap
-          super
-          bootstrap_ip_address = server.ip_address
-          Chef::Log.debug("Bootstrap IP Address: #{bootstrap_ip_address}")
-          if bootstrap_ip_address.nil?
-            error_message = "No IP address available for bootstrapping."
-            ui.error(error_message)
-            raise CloudExceptions::BootstrapError, error_message
-          end
-          config[:bootstrap_ip_address] = bootstrap_ip_address
+         # At this moment, don't bootstrap database instances. 
         end
 
         def validate_params!
