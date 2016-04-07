@@ -58,6 +58,7 @@ Example:
 ```bash
 knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_container WeblogicBackup --shape oc3 --weblogic_edition SE --db_service_name MyDatabaseInstance --dba_name SYS --dba_password MyDB#1 --run-list ofmcanberra_example
 ```
+*Unless otherwise documented the defaults for the below options will be what ever is the default in the respective cloud API*
 
 ### Create Java options
 <table>
@@ -66,6 +67,12 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
     <th>Type</th>
     <th>Description</th>
     <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>service_name</tt></td>
+    <td>String</td>
+    <td>Name of the instance to be created</td>
+    <td></td>
   </tr>
   <tr>
     <td><tt>description</tt></td>
@@ -164,6 +171,213 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
     <td></td>
   </tr>
 </table>
+
+### Create Database options
+<table>
+  <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>service_name</tt></td>
+    <td>String</td>
+    <td>Name of the instance to be created</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>description</tt></td>
+    <td>String</td>
+    <td>Free-form text that provides additional information about the service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>level</tt></td>
+    <td>PAAS|BASIC</td>
+    <td>The service level. BASIC will provision virtual images with no cloud tooling</td>
+    <td>PAAS</td>
+  </tr>
+  <tr>
+    <td><tt>subscription_type</tt></td>
+    <td>HOURLY|MONTHLY</td>
+    <td>Billing unit</td>
+    <td>HOURLY</td>
+  </tr>
+  <tr>
+    <td><tt>cloud_storage_container</tt></td>
+    <td>String</td>
+    <td>Name of the Oracle Storage Cloud Service container used to provide storage for your service instance backups</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>version</tt></td>
+    <td>String</td>
+    <td>A string containing the Oracle Database version for the service instance. Currently supports 11.2.04 or 12.1.0.2</td>
+    <td>12.1.0.2</td>
+  </tr>
+  <tr>
+    <td><tt>edition</tt></td>
+    <td>SE|EE|EE_HP|EE_EP</td>
+    <td>Software edition for the database</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>usable_storage</tt></td>
+    <td>Integer</td>
+    <td>A string containing the number of GB of usable data storage for the Oracle Database server</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><tt>admin_password</tt></td>
+    <td>String</td>
+    <td>A string containing the administrator password for the service instance.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>shape</tt></td>
+    <td>oc3|oc4|oc5|oc6|oc7| oc1m|oc2m|oc3m|oc4m|oc5m</td>
+    <td>Desired compute shape</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>sid</tt></td>
+    <td>String</td>
+    <td>The SID for the service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>pdb</tt></td>
+    <td>String</td>
+    <td>The PDB for the service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>backup_destination</tt></td>
+    <td>BOTH|DISK|NONE</td>
+    <td>Backup configuration</td>
+    <td>NONE</td>
+  </tr>
+  <tr>
+    <td><tt>failover_database</tt></td>
+    <td>yes|no</td>
+    <td>Undocumented in API</td>
+    <td>no</td>
+  </tr>
+</table>
+
+### Create SOA options
+<table>
+  <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>service_name</tt></td>
+    <td>String</td>
+    <td>Name of the instance to be created</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>description</tt></td>
+    <td>String</td>
+    <td>Free-form text that provides additional information about the service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>level</tt></td>
+    <td>PAAS</td>
+    <td>The service level</td>
+    <td>PAAS</td>
+  </tr>
+  <tr>
+    <td><tt>provision_otd</tt></td>
+    <td>Boolean</td>
+    <td>Flag that specifies whether to enable the load balancer. Currently not supported</td>
+    <td>false</td>
+  </tr>
+  <tr>
+    <td><tt>sample_app</tt></td>
+    <td>String</td>
+    <td>Flag that specifies whether to automatically deploy and start the sample application. Currently not supported</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>subscription_type</tt></td>
+    <td>HOURLY</td>
+    <td>Billing unit</td>
+    <td>HOURLY</td>
+  </tr>
+  <tr>
+    <td><tt>cloud_storage_container</tt></td>
+    <td>String</td>
+    <td>Name of the Oracle Storage Cloud Service container used to provide storage for your service instance backups</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>weblogic_version</tt></td>
+    <td>String</td>
+    <td>The Oracle WebLogic Server software version. Currently supports 10.3.6.0.12 or 12.1.3.0.5</td>
+    <td>12.1.3.0.5</td>
+  </tr>
+  <tr>
+    <td><tt>weblogic_edition</tt></td>
+    <td>SE|EE|SUITE</td>
+    <td>Software edition for WebLogic Server</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>server_count</tt></td>
+    <td>1|2|4|8</td>
+    <td>Number of Managed Servers in the domain</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><tt>topology</tt></td>
+    <td>osb|soa|soaosb|b2b|mft|apim</td>
+    <td>What SOA software you want configured</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>shape</tt></td>
+    <td>oc1m|oc2m|oc3m|oc4m</td>
+    <td>Desired compute shape</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>domain_volume_size</tt></td>
+    <td>Integer</td>
+    <td>Size of the domain volume for the service</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>backup_volume_size</tt></td>
+    <td>Integer</td>
+    <td>Size of the backup volume for the service</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>db_service_name</tt></td>
+    <td>String</td>
+    <td>Name of the Oracle Database Cloud - Database as a Service instance</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>dba_name</tt></td>
+    <td>String</td>
+    <td>Username for the Oracle Database Cloud - Database as a Service instance administrator</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>dba_password</tt></td>
+    <td>String</td>
+    <td>Password for the Oracle Database Cloud - Database as a Service instance administrator</td>
+    <td></td>
+  </tr>
+</table>
+ 
 ## Stack
 `knife oraclepaas stack build stack.yaml (options)`
 
