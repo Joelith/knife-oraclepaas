@@ -72,6 +72,12 @@ class Chef
         def before_exec_command
           super
           identity_domain = Chef::Config[:knife][:oraclepaas_domain]
+          backupDestination = locate_config_value(:backupDestination) 
+          if backupDestination.nil? || backupDestination == 'NONE'
+            cloudStorageContainer = nil
+          else
+            cloudStorageContainer = "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}"
+          end
           server_def = {
             service_name: locate_config_value(:service_name),
             description: locate_config_value(:description),
@@ -82,7 +88,7 @@ class Chef
             shape: locate_config_value(:shape),
             vmPublicKey: locate_config_value(:oraclepaas_vm_public_key),
             parameters: [{
-              cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
+              cloudStorageContainer: cloudStorageContainer,
               cloudStorageUser: locate_config_value(:oraclepaas_username),
               cloudStoragePassword: locate_config_value(:oraclepaas_password),
               type: 'db',
