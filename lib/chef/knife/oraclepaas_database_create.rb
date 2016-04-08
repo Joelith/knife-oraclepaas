@@ -81,7 +81,7 @@ class Chef
             shape: locate_config_value(:shape),
             vmPublicKey: locate_config_value(:oraclepaas_vm_public_key),
             parameters: [{
-              cloudStorageContainer: locate_config_value(:cloud_storage_container),
+              cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
               cloudStorageUser: locate_config_value(:oraclepaas_username),
               cloudStoragePassword: locate_config_value(:oraclepaas_password),
               type: 'db',
