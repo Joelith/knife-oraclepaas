@@ -27,7 +27,7 @@ knife[:oraclepaas_username] = 'Your Oracle Cloud username'
 knife[:oraclepaas_password] = 'Your Oracle Cloud password'
 knife[:oraclepaas_domain] = 'Your Oracle Cloud identity domain'
 knife[:oraclepaas_vm_public_key] = 'The public key that you use for your VMs (as text, eg: ssh-rsa <long string>)'
-knife[:oraclepaas_compute_api] = 'Something like http://api-z17.compute.us6.oraclecloud.com'
+knife[:oraclepaas_compute_api] = 'Something like https://api-z17.compute.us6.oraclecloud.com'
 ```
 
 For bootstrapping to work you will also need to provide the identity_file and ssh_user details:
