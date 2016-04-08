@@ -40,6 +40,7 @@ class Chef
           else
             raise ArgumentError, "YAML needs to have at least one instance defined."
           end
+          servers = []
           instances.each do |n|
             print "Creating #{n["type"]} instance: #{n["service_name"]}\n"
             case n["type"]
@@ -56,8 +57,53 @@ class Chef
             n["config"].each do |key, value|
               knife_cmd.config[key.to_sym] = value
             end
+
             knife_cmd.run
+            if !knife_cmd.server.nil?
+              servers << knife_cmd.server
+            end
           end
+          if stack.has_key?('callback_url')
+            send_confirmation(servers, stack['callback_url'])
+          end
+        end
+
+        def send_confirmation(servers, url)
+          # Send a summary of what we built back
+          instances = []
+          servers.each do |s|
+            payload = {
+              "name" => s.service_name,
+              "url" => s.service_uri
+            }
+            case
+              when s.class == Fog::Oracle::Database::Instance
+                payload['admin_username'] = 'SYS'
+                payload['admin_password'] = s.parameters[0]['adminPassword']
+                payload['type'] = 'database'
+              when s.class == Fog::Oracle::Java::Instance
+                payload['admin_username'] = s.parameters[0]['adminUserName']
+                payload['admin_password'] = s.parameters[0]['adminPassword']
+                payload['type'] = 'java'
+              when s.class == Fog::Oracle::SOA::Instance
+                payload['admin_username'] = s.parameters[0]['adminUserName']
+                payload['admin_password'] = s.parameters[0]['adminPassword']
+                payload['type'] = 'soa'   
+             else
+                # Do nothing, don't support the other ones at the moment
+            end
+            instances << payload
+          end
+          connection = Fog::XML::Connection.new(url)
+          response = connection.request({
+            :method   => 'GET',
+            :headers  => {
+              'Content-Type'  => 'application/json'
+            },
+            :body     => Fog::JSON.encode({
+              "instances" => instances
+            })
+          })
         end
 
         def validate_params!
