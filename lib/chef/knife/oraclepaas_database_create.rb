@@ -71,6 +71,7 @@ class Chef
 
         def before_exec_command
           super
+          identity_domain = Chef::Config[:knife][:oraclepaas_domain]
           server_def = {
             service_name: locate_config_value(:service_name),
             description: locate_config_value(:description),
