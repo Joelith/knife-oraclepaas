@@ -75,8 +75,10 @@ class Chef
           backupDestination = locate_config_value(:backupDestination) 
           if backupDestination.nil? || backupDestination == 'NONE'
             cloudStorageContainer = nil
+            cloudStorageUser = nil
           else
             cloudStorageContainer = "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}"
+            cloudStorageUser = locate_config_value(:oraclepaas_username)
           end
           server_def = {
             service_name: locate_config_value(:service_name),
@@ -87,20 +89,22 @@ class Chef
             version: locate_config_value(:version) || '12.1.0.2',
             shape: locate_config_value(:shape),
             vmPublicKey: locate_config_value(:oraclepaas_vm_public_key),
-            parameters: [{
-              cloudStorageContainer: cloudStorageContainer,
-              cloudStorageUser: locate_config_value(:oraclepaas_username),
-              cloudStoragePassword: locate_config_value(:oraclepaas_password),
-              type: 'db',
-              usableStorage: locate_config_value(:usable_storage) || 15,
-              adminPassword: locate_config_value(:admin_password),
-              sid: locate_config_value(:sid),
-              pdb: locate_config_value(:pdb),
-              backupDestination: locate_config_value(:backup_destination) || 'NONE',
-              failoverDatabase: locate_config_value(:failover_database) || 'no'
-            }]
+            parameters: []
           }
-
+          params = {
+            cloudStorageContainer: cloudStorageContainer,
+            cloudStorageUser: cloudStorageUser,
+            cloudStoragePassword: locate_config_value(:oraclepaas_password),
+            type: 'db',
+            usableStorage: locate_config_value(:usable_storage) || 15,
+            adminPassword: locate_config_value(:admin_password),
+            sid: locate_config_value(:sid),
+            pdb: locate_config_value(:pdb),
+            backupDestination: locate_config_value(:backup_destination) || 'NONE',
+            failoverDatabase: locate_config_value(:failover_database) || 'no'
+          }
+          params.delete_if { |k, v| v.nil? }
+          server_def[:parameters] << params
           @create_options = {
             server_create_timeout: 7200,
             server_def: server_def
