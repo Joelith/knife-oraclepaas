@@ -96,7 +96,7 @@ class Chef
           end
           connection = Fog::XML::Connection.new(url)
           response = connection.request({
-            :method   => 'GET',
+            :method   => 'POST',
             :headers  => {
               'Content-Type'  => 'application/json'
             },
