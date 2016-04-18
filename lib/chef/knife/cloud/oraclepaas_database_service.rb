@@ -26,6 +26,25 @@ class Chef
                             raise CloudExceptions::ServiceConnectionError, "#{e.message}. #{error_message}"
                           end
         end
+
+        def delete_server(options = {})
+          begin
+            server = get_server(options[:service_name])
+            msg_pair("Instance Name", server.service_name)
+
+            puts "\n"
+            ui.confirm("Do you really want to delete this server")
+
+            # delete the server
+            server.destroy
+          rescue NoMethodError
+            error_message = "Could not locate instance '#{options[:service_name]}'."
+            ui.error(error_message)
+            raise CloudExceptions::ServerDeleteError, error_message
+          rescue Excon::Errors::BadRequest => e
+            handle_excon_exception(CloudExceptions::ServerDeleteError, e)
+          end
+        end
       end
     end
   end
