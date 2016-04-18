@@ -50,6 +50,8 @@ class Chef
                 knife_cmd = Chef::Knife::Cloud::OraclepaasDatabaseCreate.new
               when "storage"
                 knife_cmd = Chef::Knife::Cloud::OraclepaasStorageCreate.new
+              when "soa"
+                knife_cmd = Chef::Knife::Cloud::OraclepaasSoaCreate.new
               else
                 raise ArgumentError, "Invalid instance type: #{n["type"]}"
             end
