@@ -86,7 +86,7 @@ class Chef
             cloudStoragePassword: locate_config_value(:oraclepaas_password),
             description: locate_config_value(:description),
             level: 'PAAS',
-            subscriptionType: 'HOURLY',
+            subscriptionType: 'MONTHLY',
             topology: locate_config_value(:topology),
             provisionOTD: locate_config_value(:provision_otd) || false,
             parameters: []
