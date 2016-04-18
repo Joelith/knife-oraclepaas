@@ -28,7 +28,7 @@ class Chef
         end
 
         def delete_server(options = {})
-          #begin
+          begin
             server = get_server(options[:service_name])
             server.dba_name = options[:dba_name]
             server.dba_password = options[:dba_password]
@@ -41,13 +41,13 @@ class Chef
 
             # delete the server
             server.destroy
-          #rescue NoMethodError
-          #  error_message = "Could not locate instance '#{options[:service_name]}'."
-          #  ui.error(error_message)
-          #  raise CloudExceptions::ServerDeleteError, error_message
-          #rescue Excon::Errors::BadRequest => e
-          # handle_excon_exception(CloudExceptions::ServerDeleteError, e)
-          #end
+          rescue NoMethodError
+            error_message = "Could not locate instance '#{options[:service_name]}'."
+            ui.error(error_message)
+            raise CloudExceptions::ServerDeleteError, error_message
+          rescue Excon::Errors::BadRequest => e
+           handle_excon_exception(CloudExceptions::ServerDeleteError, e)
+          end
         end
       end
     end
