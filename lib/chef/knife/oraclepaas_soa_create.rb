@@ -81,7 +81,7 @@ class Chef
           super
           server_def ={
             service_name: locate_config_value(:service_name),
-            cloudStorageContainer: locate_config_value(:cloud_storage_container),
+            cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
             cloudStorageUser: locate_config_value(:oraclepaas_username),
             cloudStoragePassword: locate_config_value(:oraclepaas_password),
             description: locate_config_value(:description),
