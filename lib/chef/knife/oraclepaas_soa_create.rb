@@ -97,7 +97,7 @@ class Chef
           # Add Weblogic parameters
           server_def[:parameters] << {
             type: 'weblogic',
-            version: locate_config_value(:weblogic_version) || '12.1.3.0.5',
+            version: locate_config_value(:weblogic_version) || '12.1.3.0.4',
             edition: locate_config_value(:weblogic_edition),
             managedServerCount: locate_config_value(:server_count) || '1',
             adminUserName: locate_config_value(:weblogic_admin_name) || 'weblogic',
