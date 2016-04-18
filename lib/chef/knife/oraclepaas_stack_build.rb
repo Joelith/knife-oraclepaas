@@ -61,7 +61,7 @@ class Chef
             end
 
             knife_cmd.run
-            if !knife_cmd.server.nil?
+            if n["type"] != 'storage' && !knife_cmd.server.nil?
               servers << knife_cmd.server
             end
           end
