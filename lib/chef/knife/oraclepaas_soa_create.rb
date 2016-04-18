@@ -79,6 +79,7 @@ class Chef
 
         def before_exec_command
           super
+          identity_domain = Chef::Config[:knife][:oraclepaas_domain]
           server_def ={
             service_name: locate_config_value(:service_name),
             cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
