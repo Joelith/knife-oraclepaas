@@ -99,12 +99,12 @@ class Chef
           # Add Weblogic parameters
           weblogic_params = {
             type: 'weblogic',
-            version: locate_config_value(:weblogic_version) || '12.1.3.0.5',
+            version: locate_config_value(:weblogic_version),
             edition: locate_config_value(:weblogic_edition),
             managedServerCount: locate_config_value(:server_count) || '1',
             domainName: locate_config_value(:domain_name),
             adminUserName: locate_config_value(:weblogic_admin_name) || 'weblogic',
-            adminPassword: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)}\#1",
+            adminPassword: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)[0,8]}\#1",
             shape: locate_config_value(:shape),
             domainVolumeSize: locate_config_value(:domain_volume_size),
             backupVolumeSize: locate_config_value(:backup_volume_size),
@@ -203,7 +203,7 @@ class Chef
 
         def validate_params!
           super
-          errors = check_for_missing_config_values!(:service_name, :cloud_storage_container, :oraclepaas_username, :oraclepaas_password, :oraclepaas_vm_public_key, :weblogic_edition, :shape, :db_service_name, :dba_name, :dba_password)
+          errors = check_for_missing_config_values!(:service_name, :cloud_storage_container, :oraclepaas_username, :oraclepaas_password, :oraclepaas_vm_public_key, :weblogic_edition, :weblogic_version, :shape, :db_service_name, :dba_name, :dba_password)
           if errors.any?
             error_message = "The following required parameters are missing: #{errors.join(', ')}"
             ui.error(error_message)
