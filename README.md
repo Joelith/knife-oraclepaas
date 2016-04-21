@@ -412,11 +412,14 @@ instances:
       cloud_storage_container: DatabaseBackup
 ...
 ```
+## Delete
+`knife oraclepaas [java|database|soa|storage|secapp|secrule] delete NAME [NAME2] [NAME3]`
+
+Delete the requested instance(s). To delete multiple instances pass multiple names seperated by spaces. This will confirm that you want to delete the instance before proceeding. 
 
 # Limitations
 
 - This is provided as is and still needs some work to be fully productionised. 
-- Deleting an instance is only supported for Java instances
 - This does not support the emea cloud service (which has a different cloud prefix)
 
 # License #
