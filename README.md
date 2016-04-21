@@ -520,6 +520,7 @@ Delete the requested instance(s). To delete multiple instances pass multiple nam
 # Limitations
 
 - This is provided as is and still needs some work to be fully productionised. 
+- This currently does not let you provision an OTD with your weblogic instance. (The provision_otd flag will not do anything)
 - This does not support the emea cloud service (which has a different cloud prefix)
 
 # License #
