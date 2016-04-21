@@ -113,8 +113,8 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
   <tr>
     <td><tt>weblogic_version</tt></td>
     <td>String</td>
-    <td>The Oracle WebLogic Server software version. Currently supports 10.3.6.0.12, 12.1.3.0.5, 12.2.1</td>
-    <td>12.1.3.0.5</td>
+    <td>The Oracle WebLogic Server software version. Check the Oracle cloud documentation for the currently supported versions</td>
+    <td></td>
   </tr>
   <tr>
     <td><tt>weblogic_edition</tt></td>
