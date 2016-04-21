@@ -21,6 +21,10 @@ class Chef
           StorageService.new
         end
 
+        def query_resource
+          @service.list_containers
+        end
+
         def before_exec_command
           @columns_with_info = [
             { label: 'Name',        key: 'name' },

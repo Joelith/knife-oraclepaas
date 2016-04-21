@@ -19,12 +19,8 @@ class Chef
         include OraclepaasServiceOptions
 
 
-        banner "knife oraclepaas storage create (options)"
+        banner "knife oraclepaas storage create NAME"
 
-        option :name,
-               long:        '--name NAME',
-               description: 'Name of the storage container to be created'
-      
         def create_service_instance
           StorageService.new
         end
@@ -34,11 +30,21 @@ class Chef
           
           
           @create_options = {
-            server_create_timeout: 30,
-            server_def: {
-              name: locate_config_value(:name)
+            container_create_timeout: 30,
+            container_def: {
+              name: @name_args.first
             }
           }                   
+        end
+
+        def execute_command
+          begin
+            @container = service.create_container(create_options)
+          rescue CloudExceptions::ServerCreateError => e
+            ui.fatal(e.message)
+            raise e
+          end
+          service.container_summary(@container, @columns_with_info)
         end
 
         # Setup the floating ip after server creation.
@@ -56,7 +62,10 @@ class Chef
 
         def validate_params!
           super
-          errors = check_for_missing_config_values!(:name)
+          errors = []
+          if @name_args.first.nil?
+            errors << 'Security Rule Name'
+          end
           if errors.any?
             error_message = "The following required parameters are missing: #{errors.join(', ')}"
             ui.error(error_message)

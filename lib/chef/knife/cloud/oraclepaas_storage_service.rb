@@ -27,16 +27,42 @@ class Chef
                           end
         end
 
-        def list_instances
+        def get_container(name)
+          connection.containers.get(name)
+        rescue Excon::Errors::BadRequest => e
+          handle_excon_exception(CloudExceptions::KnifeCloudError, e)
+        end
+
+
+        def list_containers
           connection.containers()
         end
 
-        def create_server(options={})
-          server = connection.containers.create(options[:server_def])
+        def create_container(options={})
+          container = connection.containers.create(options[:container_def])
         end
 
-        def server_summary(server, _columns_with_info = nil)
-          msg_pair('Name', server.name)
+        def container_summary(container, _columns_with_info = nil)
+          msg_pair('Name', container.name)
+        end
+
+        def delete_container(name)
+          begin
+            container = get_container(name)
+            msg_pair("Storage Name", container.name)
+
+            puts "\n"
+            ui.confirm("Do you really want to delete this storage container")
+
+            # delete the container
+            container.destroy
+          rescue NoMethodError
+            error_message = "Could not locate storage container '#{name}'."
+            ui.error(error_message)
+            raise CloudExceptions::ServerDeleteError, error_message
+          rescue Excon::Errors::BadRequest => e
+            handle_excon_exception(CloudExceptions::ServerDeleteError, e)
+          end
         end
       end
     end
