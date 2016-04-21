@@ -45,7 +45,7 @@ knife[:ssh_user] = 'opc' # The ssh user for the cloud is always opc
 Returns a list of all instances in that cloud service. There are no options to this command.
 
 ## Show
-`knife oraclepaas [java|database|soa|storage|secrule] show`
+`knife oraclepaas [java|database|soa|storage|secrule] show NAME`
 
 Returns the details for an instance. There are no options to this command.
 
@@ -378,6 +378,106 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
   </tr>
 </table>
  
+### Create Storage options
+There are no options for creating storage. Just pass the NAME as the first argument (ie: ``storage create NewStorageName``)
+
+### Create Storage Application options
+<table>
+ <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>name</tt></td>
+    <td>String</td>
+    <td>The name of the storage container. Note you do not need to pass the '/Compute-[identity-domain]/[username]/' string in the name. This will be automatically prepended</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>protocol</tt></td>
+    <td>String</td>
+    <td>Name of the protocol to use. The following values are allowed: tcp, udp, icmp, igmp, ipip, rdp, esp, ah, gre, icmpv6, ospf, pim, sctp, mplsip, all</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>dport</tt></td>
+    <td>Integer</td>
+    <td>The TCP or UDP destination port number</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>icmptype</tt></td>
+    <td>String</td>
+    <td>The IMCP type. The following values are allowed: echo, reply, ttl, traceroute, unreachable</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>imcpcode</tt></td>
+    <td>String</td>
+    <td>The IMCP code. The following values are allowed: network, host, protocol, port, df, admin</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>description</tt></td>
+    <td>String</td>
+    <td>A description of the security application</td>
+    <td></td>
+  </tr>
+</table>
+
+### Create Storage Rule options
+<table>
+ <tr>
+    <th>Key</th>
+    <th>Type</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td><tt>name</tt></td>
+    <td>String</td>
+    <td>Name of the security rule. Can only contain alphanumeric characters, hyphens, underscores and periods. Your identity domain and username will be prepended automatically.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>src_list</tt></td>
+    <td>String</td>
+    <td>Name of the source security list or security IP list to use. You can pass 'public-internet' and the plugin will convert to the correct naming scheme.</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>dst_list</tt></td>
+    <td>String</td>
+    <td>Name of the destination security list or security IP list to use. You can pass 'public-internet' and the plugin will convert to the correct naming scheme.</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>application</tt></td>
+    <td>String</td>
+    <td>The name of the security application to use. If you do not pass the fully qualified name (that contains the identity domain and your username) this will be automatically prepended.</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>action</tt></td>
+    <td>String</td>
+    <td>Either PERMIT or DENY</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><tt>description</tt></td>
+    <td>String</td>
+    <td>A description of the security rule</td>
+    <td></td>
+  </tr>
+   <tr>
+    <td><tt>disabled</tt></td>
+    <td>String</td>
+    <td>Indicates whether the security is disabled or enabled</td>
+    <td></td>
+  </tr>
+</table>
 ## Stack
 `knife oraclepaas stack build stack.yaml (options)`
 
