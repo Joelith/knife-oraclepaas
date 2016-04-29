@@ -61,6 +61,7 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
 *Unless otherwise documented the defaults for the below options will be what ever is the default in the respective cloud API*
 
 ### Create Java options
+`knife oraclepaas java create (OPTIONS)`
 <table>
   <tr>
     <th>Key</th>
@@ -173,6 +174,7 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
 </table>
 
 ### Create Database options
+`knife oraclepaas database create (OPTIONS)`
 <table>
   <tr>
     <th>Key</th>
@@ -267,6 +269,8 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
 </table>
 
 ### Create SOA options
+`knife oraclepaas soa create (OPTIONS)`
+
 <table>
   <tr>
     <th>Key</th>
@@ -381,7 +385,8 @@ knife oraclepaas java create --service_name MyJavaInstance --cloud_storage_conta
 ### Create Storage options
 There are no options for creating storage. Just pass the NAME as the first argument (ie: ``storage create NewStorageName``)
 
-### Create Storage Application options
+### Create Security Application options
+`knife oraclepaas secapp create (OPTIONS)`
 <table>
  <tr>
     <th>Key</th>
@@ -392,7 +397,7 @@ There are no options for creating storage. Just pass the NAME as the first argum
   <tr>
     <td><tt>name</tt></td>
     <td>String</td>
-    <td>The name of the storage container. Note you do not need to pass the '/Compute-[identity-domain]/[username]/' string in the name. This will be automatically prepended</td>
+    <td>The name of the security application. Note you do not need to pass the '/Compute-[identity-domain]/[username]/' string in the name. This will be automatically prepended</td>
     <td></td>
   </tr>
   <tr>
@@ -427,7 +432,8 @@ There are no options for creating storage. Just pass the NAME as the first argum
   </tr>
 </table>
 
-### Create Storage Rule options
+### Create Security Rule options
+`knife oraclepaas secrule create (OPTIONS)`
 <table>
  <tr>
     <th>Key</th>
