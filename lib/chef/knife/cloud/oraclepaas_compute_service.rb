@@ -11,7 +11,7 @@ class Chef
       class ComputeService < OraclepaasService
         def connection
           @connection ||= begin
-            connection  = Fog::Compute::Oracle.new(
+            connection  = Fog::Compute::OracleCloud.new(
                             oracle_domain:    @identity_domain,
                             oracle_username:  @username,
                             oracle_password:  @password,

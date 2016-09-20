@@ -4,6 +4,8 @@
 #
 
 require 'chef/knife/cloud/fog/service'
+require 'fog/oraclecloud'
+
 
 class Chef
   class Knife

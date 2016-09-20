@@ -12,7 +12,7 @@ class Chef
 
         def connection
           @connection ||= begin
-            connection  = Fog::Oracle::SOA.new(
+            connection  = Fog::OracleCloud::SOA.new(
                             oracle_domain:    @identity_domain,
                             oracle_username:  @username,
                             oracle_password:  @password)

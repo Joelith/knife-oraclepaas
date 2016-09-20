@@ -23,10 +23,10 @@ class Chef
 
         def before_exec_command
           @columns_with_info = [
-            { label: 'Full Name',        key: 'service_name' },
+            { label: 'Full Name',        key: 'name' },
           ]
 
-          @sort_by_field = 'service_name'
+          @sort_by_field = 'name'
         end
 
       end

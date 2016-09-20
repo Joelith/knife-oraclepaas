@@ -12,7 +12,7 @@ class Chef
 
         def connection
           @connection ||= begin
-            connection  = Fog::Oracle::Java.new(
+            connection  = Fog::OracleCloud::Java.new(
                             oracle_domain:    @identity_domain,
                             oracle_username:  @username,
                             oracle_password:  @password)
