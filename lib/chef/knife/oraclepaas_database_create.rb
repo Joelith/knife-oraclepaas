@@ -72,6 +72,7 @@ class Chef
         def before_exec_command
           super
           identity_domain = Chef::Config[:knife][:oraclepaas_domain]
+
           backupDestination = locate_config_value(:backupDestination) 
           if backupDestination.nil? || backupDestination == 'NONE'
             cloudStorageContainer = nil
@@ -88,23 +89,18 @@ class Chef
             edition: locate_config_value(:edition),
             version: locate_config_value(:version) || '12.1.0.2',
             shape: locate_config_value(:shape),
-            vmPublicKey: locate_config_value(:oraclepaas_vm_public_key),
-            parameters: []
-          }
-          params = {
+            ssh_key: locate_config_value(:oraclepaas_vm_public_key),
             cloudStorageContainer: cloudStorageContainer,
             cloudStorageUser: cloudStorageUser,
             cloudStoragePassword: locate_config_value(:oraclepaas_password),
-            type: 'db',
             usableStorage: locate_config_value(:usable_storage) || 15,
-            adminPassword: locate_config_value(:admin_password),
+            admin_password: locate_config_value(:admin_password),
             sid: locate_config_value(:sid),
             pdb: locate_config_value(:pdb),
-            backupDestination: locate_config_value(:backup_destination) || 'NONE',
+            backup_destination: locate_config_value(:backup_destination) || 'NONE',
             failoverDatabase: locate_config_value(:failover_database) || 'no'
           }
-          params.delete_if { |k, v| v.nil? }
-          server_def[:parameters] << params
+          server_def.delete_if { |k, v| v.nil? }
           @create_options = {
             server_create_timeout: 7200,
             server_def: server_def

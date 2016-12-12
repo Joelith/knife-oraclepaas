@@ -82,7 +82,7 @@ class Chef
         def before_exec_command
           super
           identity_domain = Chef::Config[:knife][:oraclepaas_domain]
-          server_def ={
+          server_def = { 
             service_name: locate_config_value(:service_name),
             cloudStorageContainer: "Storage-#{identity_domain}/#{locate_config_value(:cloud_storage_container)}",
             cloudStorageUser: locate_config_value(:oraclepaas_username),
@@ -91,34 +91,25 @@ class Chef
             level: locate_config_value(:level) || 'PAAS',
             subscriptionType: locate_config_value(:subscription_type) || 'HOURLY',
             provisionOTD: locate_config_value(:provision_otd) || false,
-            parameters: []
-          }
-          if locate_config_value(:provision_otd)
-            #TODO
-          end
-          # Add Weblogic parameters
-          weblogic_params = {
-            type: 'weblogic',
             version: locate_config_value(:weblogic_version),
             edition: locate_config_value(:weblogic_edition),
             managedServerCount: locate_config_value(:server_count) || '1',
             domainName: locate_config_value(:domain_name),
-            adminUserName: locate_config_value(:weblogic_admin_name) || 'weblogic',
-            adminPassword: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)[0,8]}\#1",
+            admin_username: locate_config_value(:weblogic_admin_name) || 'weblogic',
+            admin_password: locate_config_value(:weblogic_admin_password) || "#{locate_config_value(:service_name)[0,8]}\#1",
             shape: locate_config_value(:shape),
             domainVolumeSize: locate_config_value(:domain_volume_size),
             backupVolumeSize: locate_config_value(:backup_volume_size),
-            VMsPublicKey: locate_config_value(:oraclepaas_vm_public_key),
-            dbServiceName: locate_config_value(:db_service_name),
-            dbaName: locate_config_value(:dba_name),
-            dbaPassword: locate_config_value(:dba_password)
+            ssh_key: locate_config_value(:oraclepaas_vm_public_key),
+            db_service_name: locate_config_value(:db_service_name),
+            dba_name: locate_config_value(:dba_name),
+            dba_password: locate_config_value(:dba_password)
           }
-          weblogic_params.delete_if { |k, v| v.nil? }
-          server_def[:parameters] << weblogic_params
+          server_def.delete_if { |k, v| v.nil? }
           @create_options = {
             server_create_timeout: 7200,
             server_def: server_def
-          }                   
+          } 
         end
 
         # Setup the floating ip after server creation.

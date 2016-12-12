@@ -12,10 +12,13 @@ class Chef
 
         def connection
           @connection ||= begin
-            connection  = Fog::Storage::Oracle.new(
-                            oracle_domain:    @identity_domain,
-                            oracle_username:  @username,
-                            oracle_password:  @password)
+            connection  = Fog::Storage.new({
+                            :provider => 'OracleCloud',
+                            :oracle_domain =>    @identity_domain,
+                            :oracle_username =>  @username,
+                            :oracle_password =>  @password,
+                            :oracle_storage_api => Chef::Config[:knife][:oraclepaas_storage_api]
+                          })
                           rescue Excon::Errors::Unauthorized => e
                             error_message = "Connection failure, please check your username and password."
                             ui.fatal(error_message)

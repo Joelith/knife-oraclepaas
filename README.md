@@ -3,16 +3,9 @@ Knife Plugin for the Oracle Cloud Platform
 
 This plugin allows you to interact with the Oracle Cloud Platform from knife.
 
+Note: This plugin has not been properly updated to suit the changes in the latest Fog Oracle plugin. As such, some commands will not work. Use at your own risk (and please let me know if you find bugs)
 
 # Installation #
-
-First, you'll need to install my forked version of [fog](https://github.com/Joelith/fog) until the Oracle extensions are added to the main repository. To do so:
-
-1. Dowload the oracle modified version of [fog](https://github.com/Joelith/fog) to some directory
-2. Navigate to that directory and run `chef gem build fog.gemspec`
-3. Then run `chef gem install fog` to install into your chefdk library
-
-Then you will need to install this plugin
 
 1. Download the repository and navigate to it
 2. Run `chef gem build knife-oraclepaas.gemspec`
@@ -37,6 +30,8 @@ knife[:identity_file] = 'Path to your identity file'
 knife[:ssh_user] = 'opc' # The ssh user for the cloud is always opc
 
 ```
+
+Note: The knife.rb should be located within ~/.chef/ folder. 
 
 # Services #
 ## List
@@ -511,6 +506,7 @@ instances:
       description: "Test for Knife. Ignore"
       service_name: KnifeTestWL4
       weblogic_edition: SE
+      weblogic_version: 12.2.1
       shape: oc3
       db_service_name: KnifeTestDB4
       dba_name: SYS

@@ -15,7 +15,8 @@ class Chef
             connection  = Fog::OracleCloud::Database.new(
                             oracle_domain:    @identity_domain,
                             oracle_username:  @username,
-                            oracle_password:  @password)
+                            oracle_password:  @password,
+                            oracle_region:    @region)
                           rescue Excon::Errors::Unauthorized => e
                             error_message = "Connection failure, please check your username and password."
                             ui.fatal(error_message)

@@ -18,6 +18,15 @@ class Chef
           @username        = Chef::Config[:knife][:oraclepaas_username]
           @password        = Chef::Config[:knife][:oraclepaas_password]
           @identity_domain = Chef::Config[:knife][:oraclepaas_domain]
+          @region          = Chef::Config[:knife][:oraclepaas_region]
+          
+          if (Chef::Config[:knife][:fog_mock]) then
+            Fog.mock!
+            @delay = 1
+          else 
+            @delay = 60
+          end
+
         end
         
         def list_instances
@@ -46,7 +55,7 @@ class Chef
           print "\n#{ui.color("Waiting for server [wait time = #{options[:server_create_timeout]} seconds, delay = 60 seconds]", :magenta)}"
 
           # wait for it to be ready to do stuff
-          server.wait_for(Integer(options[:server_create_timeout]), 60) { print "."; ready? }
+          server.wait_for(Integer(options[:server_create_timeout]), @delay) { print "."; ready? }
           puts("\n")
           server
         end

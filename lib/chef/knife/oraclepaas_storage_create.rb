@@ -32,7 +32,7 @@ class Chef
           @create_options = {
             container_create_timeout: 30,
             container_def: {
-              name: @name_args.first
+              name: @name_args.first || config[:name]
             }
           }                   
         end
@@ -63,8 +63,9 @@ class Chef
         def validate_params!
           super
           errors = []
-          if @name_args.first.nil?
-            errors << 'Security Rule Name'
+          puts config
+          if @name_args.first.nil? && config[:name].nil?
+            errors << 'Storage Container name'
           end
           if errors.any?
             error_message = "The following required parameters are missing: #{errors.join(', ')}"
